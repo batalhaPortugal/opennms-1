@@ -223,12 +223,20 @@ class Snmp4JValue extends AbstractSnmpValue {
         case SMIConstants.SYNTAX_TIMETICKS :
             return Long.toString(toLong());
         case SMIConstants.SYNTAX_OCTET_STRING :
-            return toHexString();
+            return toStringDottingCntrlChars(((OctetString)m_value).getValue());
         case SMIConstants.SYNTAX_NULL:
         	return "";
         default :
             return m_value.toString();
         }
+    }
+
+    private String toStringDottingCntrlChars(final byte[] value) {
+        final byte[] results = new byte[value.length];
+        for (int i = 0; i < value.length; i++) {
+            results[i] = Character.isISOControl((char)value[i]) ? (byte)'.' : value[i];
+        }
+        return new String(results);
     }
 
     @Override
